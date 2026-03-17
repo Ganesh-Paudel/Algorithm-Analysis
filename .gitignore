@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.finalProj/
+finalProj/
+ENV/
+env/
+
+# Matplotlib & Visualization Outputs
+# (Prevents your repo from exploding with 500 versions of 'test_graph.png')
+*.png
+*.pdf
+*.svg
+!assets/  # Keep this if you have a specific folder for final report images
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# IDEs
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
