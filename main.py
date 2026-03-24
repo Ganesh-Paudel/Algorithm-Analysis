@@ -1,22 +1,9 @@
-import networkx as nx
-import matplotlib.pyplot as plt
-import osmnx as os
-from getNewGraph import GetNewGraph
-
-class LoadGraph:
-    
-    def __init__(self, path) -> None:
-        self.graph = os.load_graphml(path)
-
-    def visualizeGraph(self):
-        os.plot_graph(self.graph)
-        
+from maps import LoadMap
+from visualize import VisualizeGraph
 
 def main():
-    graph = LoadGraph("data/graph.graphml")
-    graph.visualizeGraph()
-
-
+    graph = LoadMap("data/graph.graphml").getGraph()
+    VisualizeGraph(graph).plot_map()
 
 if __name__ == "__main__":
     main()
