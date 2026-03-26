@@ -9,6 +9,20 @@ class GenerateMap:
         ox.save_graphml(graph, outFileName)
         print(f"Map Fetch Successful!!")
         return graph
+    
+
+    @staticmethod
+    def saveToCSV(graphMlFile, outFileName = "graph"):
+        print(f"Transforming graphml to normal CSV")
+
+        G = ox.load_graphml(graphMlFile)
+        nodes,edges = ox.graph_to_gdfs(G)
+        edge_list = edges[['u','v','length']].copy()
+        edge_list.columns = ['node_x', 'node_y', 'weight']
+        outputFile = outFileName + ".csv"
+        edge_list.to_csv(outFileName, index = False)
+
+        print(f"Successful")
 
 class LoadMap:
 

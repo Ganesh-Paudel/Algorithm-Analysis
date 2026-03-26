@@ -1,9 +1,11 @@
-from maps import LoadMap
+from maps import LoadMap,GenerateMap
 from visualize import VisualizeGraph
+from Nodes import ExtractNodeAndEdges
+
 
 def main():
-    graph = LoadMap("data/graph.graphml").getGraph()
-    VisualizeGraph(graph).plot_map()
+    data = ExtractNodeAndEdges("data/graph.graphml")
+    data.saveToCSV()
 
 if __name__ == "__main__":
     main()
