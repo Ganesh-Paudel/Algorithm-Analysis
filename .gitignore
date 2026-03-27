@@ -12,7 +12,7 @@ env/
 
 # Matplotlib & Visualization Outputs
 # (Prevents your repo from exploding with 500 versions of 'test_graph.png')
-*.png
+temp_frames/
 *.pdf
 *.svg
 !assets/  # Keep this if you have a specific folder for final report images
