@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
 
-stats_df = pd.read_csv('performance.csv')
-path_df = pd.read_csv('data/testCases.csv') 
+stats_df = pd.read_csv('data/aStar/aStarperformance.csv')
+path_df = pd.read_csv('data/testData/testCases.csv') 
 
 fig, ax1 = plt.subplots(figsize=(15, 10))
 
