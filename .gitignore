@@ -1,29 +1,64 @@
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized
 __pycache__/
 *.py[cod]
 *$py.class
-cache/
 
-# Environments
-.finalProj/
-finalProj/
-ENV/
+# Virtual environments
+venv/
 env/
+ENV/
+.venv/
 
-# Matplotlib & Visualization Outputs
-# (Prevents your repo from exploding with 500 versions of 'test_graph.png')
-temp_frames/
-*.pdf
-*.svg
-!assets/  # Keep this if you have a specific folder for final report images
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
 
-# Jupyter Notebook checkpoints
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+
+# Jupyter Notebook
 .ipynb_checkpoints
 
-# IDEs
+# Environment variables
+.env
+.env.*
+
+# IDEs / Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS generated files
+# OS files
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# MyPy / type checking
+.mypy_cache/
+.dmypy.json
+
+# Pyre / pytype
+.pyre/
+.pytype/
+
+# C extensions
+*.so
+
+# SQLite
+*.sqlite3
