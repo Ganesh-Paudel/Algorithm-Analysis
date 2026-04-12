@@ -1,0 +1,6 @@
+size,startX,startY,goalX,goalY,description
+20,0,0,18,19,Small_Debugging_Long_Path
+50,10,10,15,12,Medium_Grid_Short_Path
+100,0,0,99,99,Standard_City_Full_Diagonal
+500,250,250,480,490,Large_Scale_Partial_Diagonal
+1000,0,0,999,999,Extreme_Scale_One_Million_Nodes
