@@ -61,8 +61,9 @@ This software is provided for research and educational purposes. The authors mak
 
 For questions about licensing or commercial use, please contact:
 - Project Maintainers
-- Email: [maintainer-email]
-- Repository: [repository-url]
+- Ganesh Paudel, Hayden Broussard
+- Email: paudelganesh080@gmail.com
+- Repository: https://github.com/Ganesh-Paudel/Algorithm-Analysis
 
 ---
 
