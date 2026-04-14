@@ -4,6 +4,9 @@ import os
 
 def recordPerformance(size, result):
 
+    if result["Stuck_In_Traffic_Cost"] == float("inf"):
+        result["Stuck_In_Traffic_Cost"] = 100000000
+
     improvement = (
         (result["Stuck_In_Traffic_Cost"] - result["ReroutedCost"])
         / result["Stuck_In_Traffic_Cost"]

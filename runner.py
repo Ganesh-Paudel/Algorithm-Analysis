@@ -6,9 +6,10 @@ import random
 def comparisonRun(city, start, goal, algoFunc, algoName):
 
     staticStartTime = time.time()
-    staticPath, _ = algoFunc(city.graph, start, goal)
+    staticPath, staticCost, _ = algoFunc.runAlgo(city.graph, start, goal)
+    print(f"Static path: {staticPath} with cost {staticCost}")
     staticEndtime = time.time()
-    staticCost = nx.path_weight(city.graph, staticPath, weight="weight")
+    # staticCost = nx.path_weight(city.graph, staticPath, weight="weight")
 
     middleNode = staticPath[len(staticPath) // 2]
     affectedEdges = city.applyTrafficScenario(
@@ -16,12 +17,16 @@ def comparisonRun(city, start, goal, algoFunc, algoName):
         radius=random.choice([3, 5, 8]),
         intensity=random.choice([15, 20, 30, 40]),
     )
-    costStaticAfterAffect = nx.path_weight(city.graph, staticPath, weight="weight")
+    costStaticAfterAffect = algoFunc.calculatePathCost(
+        city.graph, start, weight="weight"
+    )
+    print(f"Cost after traffic change: {costStaticAfterAffect}")
 
     dynamicStartTime = time.time()
-    reroutedPath, _ = algoFunc(city.graph, start, goal)
+    reroutedPath, reroutedCost, _ = algoFunc.runAlgo(city.graph, start, goal)
     dynamicEndTime = time.time()
-    reroutedCost = nx.path_weight(city.graph, reroutedPath, weight="weight")
+    print(f"Static path: {reroutedPath} with cost {reroutedCost}")
+    # reroutedCost = nx.path_weight(city.graph, reroutedPath, weight="weight")
 
     return {
         "algo": algoName,

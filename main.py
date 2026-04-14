@@ -6,10 +6,11 @@ from performance import recordPerformance
 import pandas as pd
 from visualize import saveComparisonPlot, savePathPlot, generateSummaryPlots
 from runner import comparisonRun
+from aStar import AStar
 
 
 def run():
-    experimentData = pd.read_csv("./inputTestData.csv")
+    experimentData = pd.read_csv("./input/inputTestData.csv")
 
     for index, row in experimentData.iterrows():
         size = int(row["size"])
@@ -20,7 +21,8 @@ def run():
 
         city = CityGraph(size=size)
 
-        resAstar = comparisonRun(city, start, target, Solve.aStar, "A_Star")
+        resAstar = comparisonRun(city, start, target, AStar, "A_Star")
+
         recordPerformance(size, resAstar)
         saveComparisonPlot(
             city.graph,
@@ -29,8 +31,10 @@ def run():
             resAstar["affectedEdges"],
             f"A* Reroute (Size {size})",
         )
+        break
 
-    generateSummaryPlots("AStar_Time_Performance")
+
+generateSummaryPlots("AStar_Time_Performance")
 
 
 if __name__ == "__main__":
