@@ -10,11 +10,11 @@ The project is designed to help researchers and developers understand how differ
 
 Comprehensive documentation is available in the `docs/` directory:
 
-- **[Architecture.md](docs/Architecture.md)**: System design, components, and design patterns
-- **[User_Guide.md](docs/User_Guide.md)**: Installation, setup, and basic usage instructions
-- **[Developer_Guide.md](docs/Developer_Guide.md)**: Contributing guidelines and development practices
-- **[Results_Interpretation.md](docs/Results_Interpretation.md)**: How to analyze and interpret results
-- **[License.md](docs/License.md)**: Licensing information and terms
+- **[Architecture.md](./docs/Architecture.md)**: System design, components, and design patterns
+- **[User_Guide.md](./docs/User_Guide.md)**: Installation, setup, and basic usage instructions
+- **[Developer_Guide.md](./docs/Developer_Guide.md)**: Contributing guidelines and development practices
+- **[Results_Interpretation.md](./docs/Results_Interpretation.md)**: How to analyze and interpret results
+- **[License.md](./License.md)**: Licensing information and terms
 
 ## Key Features
 
