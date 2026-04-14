@@ -5,6 +5,7 @@ Inherits from PathfindingAlgorithm base class.
 
 import random
 from typing import Tuple, Set, Optional, Any, List
+import networkx as nx
 from .base import PathfindingAlgorithm
 
 
@@ -48,6 +49,16 @@ class GeneticPathfinder(PathfindingAlgorithm):
         Returns:
             Tuple of (path, cost, visited_nodes)
         """
+
+        def generate_initial_path() -> Optional[List]:
+            """Use NetworkX shortest-path as a reliable seed for the population."""
+            try:
+                return nx.shortest_path(graph, start, goal, weight="weight")
+            except (nx.NetworkXNoPath, nx.NetworkXError):
+                try:
+                    return nx.shortest_path(graph, start, goal)
+                except (nx.NetworkXNoPath, nx.NetworkXError):
+                    return None
 
         def generate_random_path() -> Optional[List]:
             """Generate a random valid path from start to goal using simplified approach."""
@@ -155,6 +166,11 @@ class GeneticPathfinder(PathfindingAlgorithm):
         # Initialize population with valid paths
         population = []
         max_init_attempts = self.population_size * 3  # Reduced attempts
+
+        # Seed population with a guaranteed shortest path if available
+        initial_path = generate_initial_path()
+        if initial_path and self.validate_path(graph, initial_path):
+            population.append(initial_path)
 
         attempts = 0
         while len(population) < self.population_size and attempts < max_init_attempts:

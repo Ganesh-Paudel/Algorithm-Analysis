@@ -6,7 +6,7 @@ Handles static path finding, traffic scenarios, and dynamic rerouting.
 import time
 import random
 from typing import Dict, Any, Tuple
-from ..src.algorithms.base import PathfindingAlgorithm
+from src.algorithms.base import PathfindingAlgorithm
 
 
 def run_comparison(
@@ -51,12 +51,11 @@ def run_comparison(
 
     print(f"[{algorithm.name}] Static path found with cost {static_cost:.2f}")
 
-    # Step 2: Apply traffic scenario to middle of the path
-    middle_idx = len(static_path) // 2
-    middle_node = static_path[middle_idx]
-
+    # Step 2: Apply traffic scenario at multiple points along static path
+    num_points = 5 if city.size > 100 else 1
     affected_edges = city.apply_traffic_scenario(
-        center_node=middle_node,
+        path=static_path,
+        num_points=num_points,
         radius=random.choice([3, 5, 8]),
         intensity=random.choice([15, 20, 30, 40]),
     )
@@ -93,7 +92,9 @@ def run_comparison(
         "static_cost": static_cost,
         "cost_after_traffic": cost_after_traffic,
         "rerouted_cost": rerouted_cost,
-        "improvement": cost_after_traffic - rerouted_cost if rerouted_path else 0,
+        "improvement": cost_after_traffic - rerouted_cost
+        if rerouted_path
+        else 0,
         "improvement_percent": (
             ((cost_after_traffic - rerouted_cost) / cost_after_traffic * 100)
             if rerouted_path and cost_after_traffic > 0

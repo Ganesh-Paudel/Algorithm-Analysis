@@ -77,12 +77,11 @@ def run_algorithm_test(
             error="No path found in initial search",
         )
 
-    # Step 2: Apply traffic scenario to middle of path
-    middle_idx = len(static_path) // 2
-    middle_node = static_path[middle_idx]
-
+    # Step 2: Apply traffic scenario at multiple points along the static path
+    num_points = 5 if city.size > 100 else 1
     affected_edges = city.apply_traffic_scenario(
-        center_node=middle_node,
+        path=static_path,
+        num_points=num_points,
         radius=random.choice([3, 5, 8]),
         intensity=random.choice([15, 20, 30, 40]),
     )

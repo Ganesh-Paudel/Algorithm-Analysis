@@ -7,6 +7,7 @@ Easy to switch algorithms and configure parameters.
 import pandas as pd
 from src.environments.traffic import CityGraph
 from src.utils.algorithm_factory import AlgorithmFactory
+from src.utils.performance import recordPerformance
 from config.config import get_config
 from analysis.comparison import (
     run_algorithm_test,
@@ -84,6 +85,9 @@ def run_experiments():
 
             # Add result to round
             round_result.add_result(result)
+
+            # Save performance results
+            recordPerformance(size, result)
 
             # Visualize paths if successful
             if result.success:
