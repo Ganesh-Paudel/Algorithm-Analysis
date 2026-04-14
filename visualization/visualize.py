@@ -1,6 +1,15 @@
+import os
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
+
+
+def _ensure_chart_dir() -> str:
+    """Ensure the results/charts directory exists and return its absolute path."""
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    charts_dir = os.path.join(root_dir, "results", "charts")
+    os.makedirs(charts_dir, exist_ok=True)
+    return charts_dir
 
 
 def savePathPlot(graph, path, title, fileName):
@@ -20,7 +29,8 @@ def savePathPlot(graph, path, title, fileName):
         )
 
     plt.title(title)
-    plt.savefig(f"./output/{fileName}.png")
+    charts_dir = _ensure_chart_dir()
+    plt.savefig(os.path.join(charts_dir, f"{fileName}.png"))
     plt.close()
 
 
@@ -59,14 +69,15 @@ def saveComparisonPlot(graph, staticPath, reroutedPath, affectedEdges, fileName)
         alpha=1,
     )
     plt.legend()
-    plt.savefig(f"./output/{fileName}.png", bbox_inches="tight")
+    charts_dir = _ensure_chart_dir()
+    plt.savefig(os.path.join(charts_dir, f"{fileName}.png"), bbox_inches="tight")
     plt.close()
 
 
 def generateSummaryPlots(fileName):
     import pandas as pd
 
-    df = pd.read_csv("./output/performanceResults.csv")
+    df = pd.read_csv("../results/performance_results.csv")
 
     plt.figure(figsize=(10, 6))
     plt.scatter(df["Size"], df["Efficiency_Gain"], color="green")
@@ -74,7 +85,8 @@ def generateSummaryPlots(fileName):
     plt.xlabel("Grid Size")
     plt.ylabel("Percent Cost Saved by Rerouting")
     plt.grid(True, linestyle="--", alpha=0.6)
-    plt.savefig(f"./output/{fileName}_efficiency.png")
+    charts_dir = _ensure_chart_dir()
+    plt.savefig(os.path.join(charts_dir, f"{fileName}_efficiency.png"))
     plt.close()
 
     indices = np.arange(len(df))
@@ -102,5 +114,6 @@ def generateSummaryPlots(fileName):
     plt.legend()
     plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(f"./output/{fileName}_cost_comparison.png")
+    charts_dir = _ensure_chart_dir()
+    plt.savefig(os.path.join(charts_dir, f"{fileName}_cost_comparison.png"))
     plt.close()

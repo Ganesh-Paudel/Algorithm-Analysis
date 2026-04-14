@@ -5,7 +5,7 @@ Inherits from PathfindingAlgorithm base class.
 
 import heapq
 from typing import Tuple, Set, Optional, Any
-from base import PathfindingAlgorithm
+from .base import PathfindingAlgorithm
 
 
 class AStarPathfinder(PathfindingAlgorithm):
