@@ -4,8 +4,11 @@ Inherits from PathfindingAlgorithm base class.
 """
 
 import heapq
-from typing import Tuple, Set, Optional, Any
+from typing import Tuple, Set, Optional, Any, TYPE_CHECKING
 from .base import PathfindingAlgorithm
+
+if TYPE_CHECKING:
+    from src.utils.animation_data import AnimationDataCollector, AnimationNode
 
 
 class AStarPathfinder(PathfindingAlgorithm):
@@ -16,7 +19,8 @@ class AStarPathfinder(PathfindingAlgorithm):
         self.name = "A*"
 
     def find_path(
-        self, graph: Any, start: Tuple[int, int], goal: Tuple[int, int]
+        self, graph: Any, start: Tuple[int, int], goal: Tuple[int, int],
+        animation_collector: Optional["AnimationDataCollector"] = None
     ) -> Tuple[Optional[list], float, Set]:
         """
         Find shortest path using A* algorithm.
@@ -25,6 +29,7 @@ class AStarPathfinder(PathfindingAlgorithm):
             graph: NetworkX graph representing the environment
             start: Starting node tuple (x, y)
             goal: Goal node tuple (x, y)
+            animation_collector: Optional animation data collector
 
         Returns:
             Tuple of (path, cost, visited_nodes)
@@ -40,6 +45,7 @@ class AStarPathfinder(PathfindingAlgorithm):
         g_score = {start: 0}  # actual cost from start
         f_score = {start: heuristic(start, goal)}
         visited = set()
+        step_counter = 0
 
         while open_set:
             _, current = heapq.heappop(open_set)
@@ -48,6 +54,27 @@ class AStarPathfinder(PathfindingAlgorithm):
                 continue
 
             visited.add(current)
+
+            # Collect animation data
+            if animation_collector:
+                from src.utils.animation_data import AnimationNode
+                explored_node = AnimationNode(
+                    step=step_counter,
+                    node=current,
+                    status="visited",
+                    metadata={
+                        "g_score": float(g_score[current]),
+                        "f_score": float(f_score[current]),
+                        "heuristic": float(heuristic(current, goal))
+                    }
+                )
+                animation_collector.add_step(
+                    nodes_explored=[explored_node],
+                    current_node=current,
+                    open_set=[n for _, n in open_set],
+                    closed_set=list(visited)
+                )
+                step_counter += 1
 
             if current == goal:
                 # Reconstruct path

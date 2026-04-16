@@ -3,10 +3,12 @@ Comparison runner for benchmarking pathfinding algorithms.
 Handles static path finding, traffic scenarios, and dynamic rerouting.
 """
 
+import os
 import time
 import random
 from typing import Dict, Any, Tuple
 from src.algorithms.base import PathfindingAlgorithm
+from src.utils.animation_data import AnimationDataCollector
 
 
 def run_comparison(
@@ -14,6 +16,7 @@ def run_comparison(
     start: Tuple[int, int],
     goal: Tuple[int, int],
     algorithm: PathfindingAlgorithm,
+    save_animation: bool = False
 ) -> Dict[str, Any]:
     """
     Run comparison test for an algorithm.
@@ -28,15 +31,26 @@ def run_comparison(
         start: Starting node (x, y)
         goal: Goal node (x, y)
         algorithm: PathfindingAlgorithm instance to test
+        save_animation: Whether to save animation data to JSON
 
     Returns:
         Dict with comparison results
     """
 
+    # Create animation collector if requested
+    collector = None
+    if save_animation:
+        collector = AnimationDataCollector(
+            algorithm_name=algorithm.name,
+            grid_size=city.size,
+            start=start,
+            goal=goal
+        )
+
     # Step 1: Find static path
     static_start_time = time.time()
     static_path, static_cost, static_visited = algorithm.find_path(
-        city.graph, start, goal
+        city.graph, start, goal, animation_collector=collector
     )
     static_end_time = time.time()
     static_runtime = static_end_time - static_start_time
@@ -83,6 +97,20 @@ def run_comparison(
 
     # Combine visited nodes from both runs
     all_visited = static_visited | dynamic_visited
+
+    # Save animation data if requested
+    animation_file = None
+    if save_animation and collector:
+        edges = [(u, v, city.graph[u][v]['weight']) for u, v in city.graph.edges()]
+        collector.set_graph_data(edges)
+        collector.set_traffic_affected_edges(affected_edges)
+        collector.set_result(static_path, static_cost, static_runtime)
+        
+        output_dir = os.path.join(os.path.dirname(__file__), "..", "results", "animation_data")
+        os.makedirs(output_dir, exist_ok=True)
+        animation_file = f"{output_dir}/{algorithm.name.replace(' ', '_')}_{start}_{goal}_{int(time.time() * 1000)}.json"
+        collector.get_data().save(animation_file)
+        print(f"[{algorithm.name}] Animation data saved to {animation_file}")
 
     return {
         "algorithm": algorithm.name,

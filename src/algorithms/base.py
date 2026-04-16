@@ -4,7 +4,10 @@ Provides a common interface for A*, Genetic Algorithm, and other algorithms.
 """
 
 from abc import ABC, abstractmethod
-from typing import Tuple, Set, Optional, Any
+from typing import Tuple, Set, Optional, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.utils.animation_data import AnimationDataCollector
 
 
 class PathfindingAlgorithm(ABC):
@@ -12,7 +15,8 @@ class PathfindingAlgorithm(ABC):
 
     @abstractmethod
     def find_path(
-        self, graph: Any, start: Tuple[int, int], goal: Tuple[int, int]
+        self, graph: Any, start: Tuple[int, int], goal: Tuple[int, int],
+        animation_collector: Optional["AnimationDataCollector"] = None
     ) -> Tuple[Optional[list], float, Set]:
         """
         Find a path from start to goal.
@@ -21,6 +25,7 @@ class PathfindingAlgorithm(ABC):
             graph: NetworkX graph representing the environment
             start: Starting node tuple (x, y)
             goal: Goal node tuple (x, y)
+            animation_collector: Optional animation data collector for step-by-step visualization
 
         Returns:
             Tuple of (path, cost, visited_nodes)

@@ -4,9 +4,12 @@ Inherits from PathfindingAlgorithm base class.
 """
 
 import random
-from typing import Tuple, Set, Optional, Any, List
+from typing import Tuple, Set, Optional, Any, List, TYPE_CHECKING
 import networkx as nx
 from .base import PathfindingAlgorithm
+
+if TYPE_CHECKING:
+    from src.utils.animation_data import AnimationDataCollector, AnimationNode
 
 
 class GeneticPathfinder(PathfindingAlgorithm):
@@ -36,7 +39,8 @@ class GeneticPathfinder(PathfindingAlgorithm):
         self.elite_count = max(1, int(population_size * elite_ratio))
 
     def find_path(
-        self, graph: Any, start: Tuple[int, int], goal: Tuple[int, int]
+        self, graph: Any, start: Tuple[int, int], goal: Tuple[int, int],
+        animation_collector: Optional["AnimationDataCollector"] = None
     ) -> Tuple[Optional[list], float, Set]:
         """
         Find path using genetic algorithm.
@@ -45,6 +49,7 @@ class GeneticPathfinder(PathfindingAlgorithm):
             graph: NetworkX graph representing the environment
             start: Starting node tuple (x, y)
             goal: Goal node tuple (x, y)
+            animation_collector: Optional animation data collector
 
         Returns:
             Tuple of (path, cost, visited_nodes)
@@ -211,6 +216,31 @@ class GeneticPathfinder(PathfindingAlgorithm):
                 stagnation_count = 0
             else:
                 stagnation_count += 1
+
+            # Collect animation data for this generation
+            if animation_collector and best_path:
+                from src.utils.animation_data import AnimationNode
+                gen_node = AnimationNode(
+                    step=generation,
+                    node=best_path[0] if best_path else start,
+                    status="generation",
+                    metadata={
+                        "generation": generation,
+                        "best_path_length": len(best_path),
+                        "best_fitness": best_cost,
+                        "avg_fitness": sum(c for c, _ in population_with_costs) / len(population_with_costs),
+                        "population_size": len(population)
+                    }
+                )
+                animation_collector.add_step(
+                    nodes_explored=[gen_node],
+                    current_node=best_path[0] if best_path else start,
+                    metadata={
+                        "generation": generation,
+                        "best_fitness": best_cost,
+                        "population_size": len(population)
+                    }
+                )
 
             # Early termination
             if stagnation_count >= max_stagnation:

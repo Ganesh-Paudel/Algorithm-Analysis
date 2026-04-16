@@ -62,3 +62,6 @@ Thumbs.db
 
 # SQLite
 *.sqlite3
+
+.media/videos/manim_scene/480p15/partial_movie_files/
+
