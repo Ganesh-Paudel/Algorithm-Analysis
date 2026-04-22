@@ -77,7 +77,7 @@ def saveComparisonPlot(graph, staticPath, reroutedPath, affectedEdges, fileName)
 def generateSummaryPlots(fileName):
     import pandas as pd
 
-    df = pd.read_csv("../results/performance_results.csv")
+    df = pd.read_csv("../results/performanceResults.csv")
 
     plt.figure(figsize=(10, 6))
     plt.scatter(df["Size"], df["Efficiency_Gain"], color="green")
@@ -116,4 +116,30 @@ def generateSummaryPlots(fileName):
     plt.tight_layout()
     charts_dir = _ensure_chart_dir()
     plt.savefig(os.path.join(charts_dir, f"{fileName}_cost_comparison.png"))
+    plt.close()
+
+    # Memory usage comparison
+    plt.figure(figsize=(12, 6), dpi=100)
+    plt.bar(
+        indices - width / 2,
+        df["StaticMemoryMB"],
+        width,
+        label="Static Path Memory (MB)",
+        color="#3498db",
+    )
+    plt.bar(
+        indices + width / 2,
+        df["DynamicMemoryMB"],
+        width,
+        label="Dynamic Path Memory (MB)",
+        color="#e74c3c",
+    )
+
+    plt.xlabel("Experiment (Grid Size)")
+    plt.ylabel("Memory Usage (MB)")
+    plt.title("Memory Usage: Static vs Dynamic Pathfinding")
+    plt.legend()
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+    plt.tight_layout()
+    plt.savefig(os.path.join(charts_dir, f"{fileName}_memory_comparison.png"))
     plt.close()

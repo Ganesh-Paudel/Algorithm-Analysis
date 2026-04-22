@@ -23,6 +23,8 @@ class AlgorithmResult:
     nodes_explored: int = 0
     static_runtime: float = 0.0
     dynamic_runtime: float = 0.0
+    static_memory: float = 0.0
+    dynamic_memory: float = 0.0
     error: Optional[str] = None
     static_path: Optional[List] = None
     rerouted_path: Optional[List] = None
@@ -150,6 +152,8 @@ class ResultsAggregator:
                         "nodes_explored": result.nodes_explored,
                         "static_runtime": result.static_runtime,
                         "dynamic_runtime": result.dynamic_runtime,
+                        "static_memory": result.static_memory,
+                        "dynamic_memory": result.dynamic_memory,
                     })
 
         return comparison

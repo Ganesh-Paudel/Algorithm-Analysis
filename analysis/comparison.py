@@ -6,6 +6,7 @@ Works with any algorithm through the PathfindingAlgorithm interface.
 import os
 import time
 import random
+import tracemalloc
 from typing import Dict, Any, Tuple, Optional, List
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -62,11 +63,14 @@ def run_algorithm_test(
     """
 
     # Step 1: Find static path
+    tracemalloc.start()
     static_start_time = time.time()
     static_path, static_cost, static_visited = algorithm.find_path(
         city.graph, start, goal
     )
     static_end_time = time.time()
+    static_memory = tracemalloc.get_traced_memory()[1] / 1024 / 1024  # Peak in MB
+    tracemalloc.stop()
     static_runtime = static_end_time - static_start_time
 
     if static_path is None:
@@ -90,11 +94,14 @@ def run_algorithm_test(
     cost_after_traffic = algorithm.calculate_path_cost(city.graph, static_path)
 
     # Step 3: Find rerouted path (dynamic replanning)
+    tracemalloc.start()
     dynamic_start_time = time.time()
     rerouted_path, rerouted_cost, dynamic_visited = algorithm.find_path(
         city.graph, start, goal
     )
     dynamic_end_time = time.time()
+    dynamic_memory = tracemalloc.get_traced_memory()[1] / 1024 / 1024  # Peak in MB
+    tracemalloc.stop()
     dynamic_runtime = dynamic_end_time - dynamic_start_time
 
     if rerouted_path is None:
@@ -122,6 +129,8 @@ def run_algorithm_test(
         nodes_explored=len(all_visited),
         static_runtime=static_runtime,
         dynamic_runtime=dynamic_runtime,
+        static_memory=static_memory,
+        dynamic_memory=dynamic_memory,
         static_path=static_path,
         rerouted_path=rerouted_path,
         affected_edges=affected_edges,
@@ -418,5 +427,51 @@ def visualize_comparison_charts(
         print(f"Saved comparison chart to {output_path}")
     except Exception as e:
         print(f"Error saving chart: {e}")
+    finally:
+        plt.close()
+
+    # Memory Usage Comparison Chart
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for algo in algorithms:
+        static_memory_by_size = {}
+        dynamic_memory_by_size = {}
+        for result in comparison_data[algo]:
+            if result["success"]:
+                size = result["size"]
+                if "static_memory" in result and result["static_memory"] is not None:
+                    if size not in static_memory_by_size:
+                        static_memory_by_size[size] = []
+                    static_memory_by_size[size].append(result["static_memory"])
+                if "dynamic_memory" in result and result["dynamic_memory"] is not None:
+                    if size not in dynamic_memory_by_size:
+                        dynamic_memory_by_size[size] = []
+                    dynamic_memory_by_size[size].append(result["dynamic_memory"])
+
+        if static_memory_by_size:
+            avg_static = [
+                sum(static_memory_by_size[size]) / len(static_memory_by_size[size])
+                for size in sorted(static_memory_by_size.keys())
+            ]
+            ax.plot(sorted(static_memory_by_size.keys()), avg_static, marker="o", linestyle="-", label=f"{algo} Static")
+
+        if dynamic_memory_by_size:
+            avg_dynamic = [
+                sum(dynamic_memory_by_size[size]) / len(dynamic_memory_by_size[size])
+                for size in sorted(dynamic_memory_by_size.keys())
+            ]
+            ax.plot(sorted(dynamic_memory_by_size.keys()), avg_dynamic, marker="s", linestyle="--", label=f"{algo} Dynamic")
+
+    ax.set_xlabel("Grid Size")
+    ax.set_ylabel("Average Memory Usage (MB)")
+    ax.set_title("Memory Usage: Static vs Dynamic Pathfinding")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    memory_output_path = f"{output_dir}/memory_usage_comparison.png"
+    try:
+        plt.savefig(memory_output_path, dpi=100, bbox_inches="tight")
+        print(f"Saved memory usage chart to {memory_output_path}")
+    except Exception as e:
+        print(f"Error saving memory chart: {e}")
     finally:
         plt.close()
